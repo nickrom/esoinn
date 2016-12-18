@@ -16,10 +16,12 @@ int main() {
             "du","de","do", "ba","bi","bu","be","bo", "pa","pi","pu","pe","po", "kya","kyu","kyo", "sha","shu","sho",
             "cha","chu","cho", "nya","nyu","nyo", "hya","hyu","hyo" , "mya","myu","myo" , "rya","ryu","ryo" ,
             "gya","gyu","gyo" , "ja","ju","jo" , "bya","byu","byo" , "pya","pyu","pyo"};
+    srand(time(NULL));
     for (String symbol : symbols) {
         String path = dir + symbol + "/";
         Mat image;
         image = imread(path + symbol + ext);   // Read the file
+        cout << image.rows << ' ' << image.cols << endl;
         if (!image.data)                              // Check for invalid input
         {
             cout << "Could not open or find the image" << std::endl;
@@ -28,13 +30,11 @@ int main() {
         for (int i = 0; i < 10; i++) {
             Mat image1 = image.clone();
 
-            srand(time(NULL));
-
             for (int y = 0; y < image1.rows; y++) {
                 for (int x = 0; x < image1.cols; x++) {
                     int r = rand() % 10;
                     if (r == 0) {
-                        Vec3b intensity = image.at<Vec3b>(x, y);
+                        Vec3b intensity = image.at<Vec3b>(y, x);
                         unsigned char blue = intensity.val[0];
                         unsigned char green = intensity.val[1];
                         unsigned char red = intensity.val[2];
@@ -43,7 +43,7 @@ int main() {
                         intensity.val[1] = 255 - (green / 255) * 255;
                         intensity.val[2] = 255 - (red / 255) * 255;
 
-                        image1.at<Vec3b>(x, y) = intensity;
+                        image1.at<Vec3b>(y, x) = intensity;
                     }
 
                 }
@@ -66,16 +66,19 @@ int main() {
 
             /// Set your 3 points to calculate the  Affine Transform
             srcTri[0] = Point2f(0, 0);
-            int r = rand() % src.cols;
-            srcTri[1] = Point2f(src.cols - r, 0);
-            srcTri[2] = Point2f(0, src.rows - r);
+            srcTri[1] = Point2f(src.cols - 1, 0);
+            srcTri[2] = Point2f(0, src.rows - 1);
 
-            float r1;
-            r1 = 1.0/((float)(rand() % 10 + 1));
-            dstTri[0] = Point2f(src.cols * 0.0, src.rows * r);
-            r1= 1.0/((float)(rand() % 10 + 1));
-            dstTri[1] = Point2f(src.cols * r, src.rows * 0.25);
-            dstTri[2] = Point2f(src.cols * 0.15, src.rows * 0.7);
+            float r1,r2;
+            r1 = (rand() % 100)/100.0;
+            r2= (rand() % 100)/100.0;
+            dstTri[0] = Point2f(0, src.rows * r2);
+            r1= (rand() % 100)/100.0;
+            r2= (rand() % 100)/100.0;
+            dstTri[1] = Point2f(src.cols -1, 0);
+            r1= (rand() % 100)/100.0;
+            r2= (rand() % 100)/100.0;
+            dstTri[2] = Point2f(0, src.rows -1);
 
             /// Get the Affine Transform
             warp_mat = getAffineTransform(srcTri, dstTri);
@@ -84,6 +87,8 @@ int main() {
             warpAffine(src, warp_dst, warp_mat, warp_dst.size(), INTER_LINEAR, BORDER_TRANSPARENT);
 
             imwrite(path + "transform" + i0 + ext, warp_dst);
+
+            cout << path << " - " <<  "Successed" << endl;
         }
     }
     return 0;

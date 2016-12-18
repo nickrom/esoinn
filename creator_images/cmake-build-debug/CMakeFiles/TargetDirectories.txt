@@ -1,0 +1,3 @@
+/home/user/Документы/ESOINN/creator_images/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/user/Документы/ESOINN/creator_images/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/user/Документы/ESOINN/creator_images/cmake-build-debug/CMakeFiles/opencv_my_example.dir
